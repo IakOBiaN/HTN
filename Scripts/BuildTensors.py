@@ -1,9 +1,34 @@
 import numpy as np
 
-inf = -1e8
 
-def build_matrix (calc, temp, m_par):
+def build_matrix(calc, temp, m_par):
+	"""Build the per-edge transfer matrices for the chosen model.
 
+	Returns a list of three Boltzmann-weight matrices (one per edge
+	direction) with shape ``(states, states)``, where ``states`` depends on
+	the model: 2 for ``ising``/``mono`` and 3 for ``binary``.
+
+	Parameters
+	----------
+	calc : Scripts.MainScripts.CalcConfig
+		Simulation configuration; ``calc.model``, ``calc.coord`` and
+		``calc.constant`` are read.
+	temp : float
+		Temperature in the same units as ``calc.constant``.
+	m_par : list of float
+		Model parameters.  Layout per model:
+
+		* ``mono``:   ``[mu, eps]``
+		* ``binary``: ``[muA, muB, epsAA, epsBB, epsAB]``
+		* ``ising``:  ``[h, J]``
+
+		Trailing zeros are appended automatically up to length 10.
+
+	Returns
+	-------
+	list of numpy.ndarray
+		Three Boltzmann-weight matrices (right / bottom / extra edge).
+	"""
 	model = calc.model
 	neigbours = calc.coord
 

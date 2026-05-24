@@ -59,7 +59,7 @@ A family of hierarchical lattices parameterised by an integer *p* (`calc.metPara
 **Requirements:** Python ≥ 3.8, NumPy, SciPy.
 
 ```bash
-git clone https://github.com/<your-username>/htn.git
+git clone https://github.com/iakobian/htn.git
 cd htn
 pip install -r requirements.txt
 ```

@@ -2,12 +2,55 @@ import numpy as np
 import gc
 
 def identity(dimensions, elements):
+	"""Return a generalised Kronecker delta ("copy") tensor.
+
+	The tensor has shape ``(elements,) * dimensions`` and contains 1 at
+	positions where all indices are equal, and 0 everywhere else.  Used as
+	a copy node in tensor-network diagrams.
+
+	Parameters
+	----------
+	dimensions : int
+		Rank (number of legs) of the tensor.
+	elements : int
+		Size of each dimension.
+	"""
 	id = np.zeros((elements, ) * dimensions)
 	for i in range(elements):
 		id[((i, ) * dimensions)] = 1
 	return id
 
+
 def htn_step(tensors, scale, norm, calc):
+	"""Perform one HTN renormalization step on the input tensor.
+
+	Contracts the current tensor with its replicas according to the
+	hierarchical generator of the chosen lattice (``calc.lattice``),
+	producing the next-scale effective tensor.  Also tracks the running
+	log-norm (``scale``) so that the partition function does not overflow
+	and updates ``calc.nodes`` with the number of physical sites
+	represented by the current tensor.
+
+	Parameters
+	----------
+	tensors : list of numpy.ndarray
+		Single-element list holding the current effective tensor; updated
+		in place.
+	scale : float
+		Accumulated logarithm of normalisation factors from previous
+		iterations.
+	norm : float
+		Norm from the previous iteration (unused as input; preserved for
+		API stability).
+	calc : Scripts.MainScripts.CalcConfig
+		Configuration; ``calc.lattice``, ``calc.metParam`` and
+		``calc.scale`` are read; ``calc.nodes`` is written.
+
+	Returns
+	-------
+	tuple
+		``(tensors, scale, norm)`` after the step.
+	"""
 	if calc.lattice == "FSHL":
 		size = calc.metParam
 		edges_in = (1 + size * 2) ** 2
