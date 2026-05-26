@@ -1,0 +1,5 @@
+[tool.pytest.ini_options]
+# Make ``Scripts`` importable from tests when pytest is run from the
+# project root.
+pythonpath = ["."]
+testpaths = ["tests"]

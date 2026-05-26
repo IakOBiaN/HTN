@@ -112,6 +112,29 @@ python binary_FSHL.py
 
 Output is printed to stdout as whitespace-separated columns, ready for piping into plotting tools.
 
+## Running tests
+
+A small regression suite (`tests/test_regression.py`) checks selected
+thermodynamic observables against values captured from the original
+published code on the four bundled examples.
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate              # PowerShell: .venv\Scripts\Activate.ps1
+                                    # Unix:       source .venv/bin/activate
+pip install -r requirements-dev.txt
+pytest -v
+```
+
+To regenerate the baseline values (for example after an intentional
+physics-level change), run:
+
+```bash
+.venv\Scripts\python.exe tools\capture_baseline.py
+```
+
+and paste the printed dictionaries into `tests/test_regression.py`.
+
 ## API reference
 
 ### `CalcConfig`
@@ -149,11 +172,17 @@ htn/
 │   ├── BuildTensors.py      # transfer matrix construction for each model
 │   ├── TensorNetworks.py    # HTN contraction step (diamond and FSHL)
 │   └── MainScripts.py       # CalcConfig, simulate(), full(), heat_capacity()
+├── tests/
+│   └── test_regression.py   # baseline values captured from the published code
+├── tools/
+│   └── capture_baseline.py  # regenerate baseline values
 ├── ising_diamond.py         # example: Ising / diamond lattice
 ├── ising_FSHL.py            # example: Ising / FSHL
 ├── binary_diamond.py        # example: binary gas / diamond lattice
 ├── binary_FSHL.py           # example: binary gas / FSHL
-├── requirements.txt
+├── pyproject.toml           # pytest configuration
+├── requirements.txt         # runtime dependencies
+├── requirements-dev.txt     # adds pytest on top of requirements.txt
 └── LICENSE
 ```
 
