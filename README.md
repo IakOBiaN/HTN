@@ -56,13 +56,45 @@ A family of hierarchical lattices parameterised by an integer *p* (`calc.metPara
 
 ## Installation
 
-**Requirements:** Python ≥ 3.8, NumPy, SciPy.
+**Requirements:** Python ≥ 3.8, NumPy, SciPy < 1.12 (see note below).
 
 ```bash
 git clone https://github.com/iakobian/htn.git
 cd htn
+python -m venv .venv
+```
+
+Activate the virtual environment:
+
+| Shell | Command |
+|---|---|
+| Linux / macOS | `source .venv/bin/activate` |
+| Windows `cmd.exe` | `.venv\Scripts\activate.bat` |
+| Windows PowerShell | `.venv\Scripts\Activate.ps1` |
+
+Then install dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
+
+> **PowerShell users:** if `Activate.ps1` fails with
+> *"running scripts is disabled on this system"*, run this once (per user, persistent):
+>
+> ```powershell
+> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+> ```
+>
+> Alternatively, skip activation entirely and call the venv's Python directly:
+>
+> ```powershell
+> .venv\Scripts\python.exe -m pip install -r requirements.txt
+> .venv\Scripts\python.exe ising_diamond.py
+> ```
+
+> **SciPy version:** the code currently uses `scipy.misc.derivative`,
+> which was removed in SciPy 1.12.  `requirements.txt` pins
+> `scipy<1.12` until the migration to a modern API is done.
 
 ## Quick start
 
@@ -118,22 +150,31 @@ A small regression suite (`tests/test_regression.py`) checks selected
 thermodynamic observables against values captured from the original
 published code on the four bundled examples.
 
+With the virtual environment from the [Installation](#installation)
+section active, install the development dependencies and run pytest:
+
 ```bash
-python -m venv .venv
-.venv\Scripts\activate              # PowerShell: .venv\Scripts\Activate.ps1
-                                    # Unix:       source .venv/bin/activate
 pip install -r requirements-dev.txt
 pytest -v
 ```
 
-To regenerate the baseline values (for example after an intentional
-physics-level change), run:
+The suite runs 32 parametrised cases in about 15 s on a modern laptop.
 
-```bash
-.venv\Scripts\python.exe tools\capture_baseline.py
+Without activating the venv (handy on Windows PowerShell):
+
+```powershell
+.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.venv\Scripts\python.exe -m pytest -v
 ```
 
-and paste the printed dictionaries into `tests/test_regression.py`.
+To regenerate the baseline values (for example after an intentional
+physics-level change):
+
+```bash
+python tools/capture_baseline.py
+```
+
+Paste the printed dictionaries into `tests/test_regression.py`.
 
 ## API reference
 
