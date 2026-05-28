@@ -1,10 +1,9 @@
 """Regression tests for HTN simulations.
 
-The expected values below were captured on the bundled examples using
-the original code with NumPy 1.26.4 and SciPy 1.11.4 (see
-``tools/capture_baseline.py``).  HTN iteration is deterministic, so the
-tolerance is tight; an absolute floor handles observables that vanish
-in the dilute / saturated limits.
+The expected values below were captured on the bundled examples from
+the original published code (see ``tools/capture_baseline.py``).
+HTN iteration is deterministic, so the tolerance is tight; an absolute
+floor handles observables that vanish in the dilute / saturated limits.
 
 Any change that perturbs these values breaks the test -- which is
 usually the desired behaviour: it flags an unintended regression.

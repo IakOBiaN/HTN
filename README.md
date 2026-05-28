@@ -56,7 +56,7 @@ A family of hierarchical lattices parameterised by an integer *p* (`calc.metPara
 
 ## Installation
 
-**Requirements:** Python ≥ 3.8, NumPy, SciPy < 1.12 (see note below).
+**Requirements:** Python ≥ 3.8, NumPy.
 
 ```bash
 git clone https://github.com/iakobian/htn.git
@@ -91,10 +91,6 @@ pip install -r requirements.txt
 > .venv\Scripts\python.exe -m pip install -r requirements.txt
 > .venv\Scripts\python.exe ising_diamond.py
 > ```
-
-> **SciPy version:** the code currently uses `scipy.misc.derivative`,
-> which was removed in SciPy 1.12.  `requirements.txt` pins
-> `scipy<1.12` until the migration to a modern API is done.
 
 ## Quick start
 

@@ -1,7 +1,16 @@
 import numpy as np
-from scipy.misc import derivative
 import Scripts.TensorNetworks as tn
 import Scripts.BuildTensors as bt
+
+
+def _second_derivative(f, x, dx=1e-4):
+	"""Three-point central finite difference for the second derivative.
+
+	Uses the standard stencil
+	``(f(x - dx) - 2 * f(x) + f(x + dx)) / dx**2`` which approximates
+	``f''(x)`` with truncation error of order ``dx**2``.
+	"""
+	return (f(x - dx) - 2.0 * f(x) + f(x + dx)) / (dx ** 2)
 
 class CalcConfig:
 	"""Configuration container for an HTN simulation.
@@ -119,7 +128,7 @@ def heat_capacity(calc, T = 1., m_par = [0.0]*10):
 	float
 		Heat capacity *C*_V.
 	"""
-	result = T * derivative(lambda x: simulate(calc, x, m_par), T, n=2, dx=1e-4)
+	result = T * _second_derivative(lambda x: simulate(calc, x, m_par), T, dx=1e-4)
 	return result
 
 def full(calc, T = 1., m_par = [0.0] * 10, dmu = 1e-3, dT = 1e-3, derivatives = [1, ] + [0] * 2, T_derivative = True, mu_derivative = True):

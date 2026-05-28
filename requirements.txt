@@ -1,3 +1,1 @@
 numpy>=1.21
-# scipy.misc.derivative was removed in SciPy 1.12; pin until migration is done.
-scipy>=1.7,<1.12

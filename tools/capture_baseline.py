@@ -1,8 +1,8 @@
 """Capture baseline thermodynamic values for regression tests.
 
-Run inside an activated venv (scipy<1.12 must be installed):
+Run from the project root:
 
-    .venv\\Scripts\\python.exe tools\\capture_baseline.py > tools\\baseline.txt
+    python tools/capture_baseline.py > tools/baseline.txt
 
 The printed Python literals are intended to be pasted into
 ``tests/test_regression.py`` as expected values.
