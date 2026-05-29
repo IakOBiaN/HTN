@@ -14,5 +14,5 @@ h = 1.0
 print("Temperature, Heat_capacity")
 for T in ms.np.arange(1.8, 2.6, 0.01):
 	m_par = [h, -J, 0, 0, 0, 0]
-	result = ms.heat_capacity(calc, T, m_par)
-	print(T, result)
+	result = ms.thermodynamics(calc, T, m_par, heat_capacity=True)
+	print(T, result["heat_capacity"])

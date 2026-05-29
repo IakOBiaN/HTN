@@ -34,7 +34,8 @@ def _ising_cv(lattice, T, **extra):
 	calc.constant = 1.0
 	for key, value in extra.items():
 		setattr(calc, key, value)
-	return ms.heat_capacity(calc, T, [1.0, -1.0, 0, 0, 0, 0])
+	out = ms.thermodynamics(calc, T, [1.0, -1.0, 0, 0, 0, 0], heat_capacity=True)
+	return out["heat_capacity"]
 
 
 def _binary_full(lattice, mu, **extra):
@@ -43,7 +44,14 @@ def _binary_full(lattice, mu, **extra):
 	calc.lattice = lattice
 	for key, value in extra.items():
 		setattr(calc, key, value)
-	return ms.full(calc, 100.0, [mu, 10.0, 4.0, 6.0, 0.0, 0.0])
+	out = ms.thermodynamics(
+		calc, 100.0, [mu, 10.0, 4.0, 6.0, 0.0, 0.0],
+		coverage=True, susceptibility=True, entropy=True, heat_capacity=True,
+	)
+	return (
+		out["coverage"], out["entropy"], out["susceptibility"],
+		out["heat_capacity"], out["grand_potential"],
+	)
 
 
 # ---------------------------------------------------------------------------

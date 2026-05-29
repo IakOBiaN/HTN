@@ -3,15 +3,6 @@ import Scripts.TensorNetworks as tn
 import Scripts.BuildTensors as bt
 
 
-def _second_derivative(f, x, dx=1e-4):
-	"""Three-point central finite difference for the second derivative.
-
-	Uses the standard stencil
-	``(f(x - dx) - 2 * f(x) + f(x + dx)) / dx**2`` which approximates
-	``f''(x)`` with truncation error of order ``dx**2``.
-	"""
-	return (f(x - dx) - 2.0 * f(x) + f(x + dx)) / (dx ** 2)
-
 class CalcConfig:
 	"""Configuration container for an HTN simulation.
 
@@ -108,11 +99,24 @@ def simulate(calc, T = 1.0, m_par = [0.0] * 10):
 	nodes = calc.nodes
 	return (scale + np.log(norm)) / (nodes / (calc.constant * T))
 
-def heat_capacity(calc, T = 1., m_par = [0.0]*10):
-	"""Return the heat capacity at temperature *T*.
+def thermodynamics(calc, T=1.0, m_par=None, *, coverage=False, susceptibility=False,
+				   entropy=False, heat_capacity=False, mu_index=0, dmu=1e-3, dT=1e-3):
+	"""Compute the requested thermodynamic observables.
 
-	Computed as a numerical second derivative of the grand potential with
-	respect to temperature.
+	Each observable is a finite-difference derivative of the grand
+	potential ``Omega = simulate(calc, T, m_par)``.  Only the points
+	needed for the requested observables are evaluated, and the central
+	point ``Omega(mu0, T0)`` is shared between the two second
+	derivatives:
+
+	==================  ======================  ==================
+	Observable          Derivative              Points evaluated
+	==================  ======================  ==================
+	``coverage``        first,  d/dmu           ``mu-``, ``mu+``
+	``susceptibility``  second, d2/dmu2         ``mu-``, C, ``mu+``
+	``entropy``         first,  d/dT            ``T-``, ``T+``
+	``heat_capacity``   second, d2/dT2          ``T-``, C, ``T+``
+	==================  ======================  ==================
 
 	Parameters
 	----------
@@ -120,71 +124,56 @@ def heat_capacity(calc, T = 1., m_par = [0.0]*10):
 		Simulation configuration.
 	T : float
 		Temperature.
-	m_par : list of float
+	m_par : list of float, optional
 		Model parameters.
+	coverage, susceptibility, entropy, heat_capacity : bool
+		Select which observables to compute.
+	mu_index : int
+		Index into ``m_par`` of the chemical potential to differentiate
+		(for ``coverage`` / ``susceptibility``).
+	dmu, dT : float
+		Finite-difference step sizes for the chemical potential and the
+		temperature.
 
 	Returns
 	-------
-	float
-		Heat capacity *C*_V.
+	dict
+		Maps each requested observable name to its value.  When a second
+		derivative is requested the central point is evaluated anyway, so
+		``grand_potential`` (= ``Omega(mu0, T0)``) is included as well.
 	"""
-	result = T * _second_derivative(lambda x: simulate(calc, x, m_par), T, dx=1e-4)
+	if m_par is None:
+		m_par = [0.0] * 10
+
+	need_mu = coverage or susceptibility
+	need_T = entropy or heat_capacity
+	need_center = susceptibility or heat_capacity
+
+	result = {}
+
+	center = None
+	if need_center:
+		center = simulate(calc, T, m_par)
+		result["grand_potential"] = center
+
+	if need_mu:
+		mu_minus = m_par[:]
+		mu_plus = m_par[:]
+		mu_minus[mu_index] -= dmu
+		mu_plus[mu_index] += dmu
+		omega_mu_minus = simulate(calc, T, mu_minus)
+		omega_mu_plus = simulate(calc, T, mu_plus)
+		if coverage:
+			result["coverage"] = -(omega_mu_minus - omega_mu_plus) / (2.0 * dmu)
+		if susceptibility:
+			result["susceptibility"] = calc.constant * T * (omega_mu_minus - 2.0 * center + omega_mu_plus) / (dmu ** 2)
+
+	if need_T:
+		omega_T_minus = simulate(calc, T - dT, m_par)
+		omega_T_plus = simulate(calc, T + dT, m_par)
+		if entropy:
+			result["entropy"] = -(omega_T_minus - omega_T_plus) / (2.0 * dT)
+		if heat_capacity:
+			result["heat_capacity"] = T * (omega_T_minus - 2.0 * center + omega_T_plus) / (dT ** 2)
+
 	return result
-
-def full(calc, T = 1., m_par = [0.0] * 10, dmu = 1e-3, dT = 1e-3, derivatives = [1, ] + [0] * 2, T_derivative = True, mu_derivative = True):
-	"""Compute several thermodynamic observables at once.
-
-	Uses central finite differences of the grand potential with respect to
-	the chemical potential(s) and temperature.
-
-	Parameters
-	----------
-	calc : CalcConfig
-		Simulation configuration.
-	T : float
-		Temperature.
-	m_par : list of float
-		Model parameters.
-	dmu : float
-		Step size for chemical-potential derivatives.
-	dT : float
-		Step size for temperature derivatives.
-	derivatives : list of int
-		Flags (0 or 1) indicating which entries of ``m_par`` are chemical
-		potentials to differentiate.  Default: ``[1, 0, 0]``.
-	T_derivative, mu_derivative : bool
-		Toggle the corresponding finite-difference computations.
-
-	Returns
-	-------
-	tuple
-		``(coverage, entropy, susceptibility, heat_capacity, grand_potential)``.
-	"""
-	grandPotential_dmu = []
-	grandPotential_dT = []
-	if mu_derivative:
-		der_par = m_par[:]
-		for i, par in enumerate(derivatives):
-			if par == 1:
-				der_par[i] -= dmu
-		for _ in range(2):
-			lnZ = simulate(calc, T, der_par)
-			grandPotential_dmu.append(lnZ)
-			for i, par in enumerate(derivatives):
-				if par == 1:
-					der_par[i] += 2.0 * dmu
-		del der_par
-	else:
-		grandPotential_dmu = [0, 0]
-	if T_derivative:
-		for diff_T in [T - dT, T, T + dT]:
-			lnZ = simulate(calc, diff_T, m_par)
-			grandPotential_dT.append(lnZ)
-	else:
-		grandPotential_dT = [0, 0, 0]
-
-	coverage = - (grandPotential_dmu[0] - grandPotential_dmu[1]) / (dmu * 2.0)
-	entropy = - (grandPotential_dT[0] - grandPotential_dT[2]) / (dT * 2.0)
-	susceptibility = calc.constant * T * (grandPotential_dmu[0] - 2.0 * grandPotential_dT[1] + grandPotential_dmu[1]) / (dT ** 2.0)
-	heat_cap = T * (grandPotential_dT[0] - 2.0 * grandPotential_dT[1] + grandPotential_dT[2]) / (dT ** 2.0)
-	return coverage, entropy, susceptibility, heat_cap, grandPotential_dT[1]

@@ -30,7 +30,8 @@ def ising_baseline(lattice, **extra):
 
     results = {}
     for T in temperatures:
-        cv = ms.heat_capacity(calc, T, [h, -J, 0, 0, 0, 0])
+        out = ms.thermodynamics(calc, T, [h, -J, 0, 0, 0, 0], heat_capacity=True)
+        cv = out["heat_capacity"]
         results[T] = cv
         print(f"    {T!r}: {cv!r},")
     return results
@@ -49,9 +50,16 @@ def binary_baseline(lattice, **extra):
     results = {}
     for mu in chemical_potentials:
         m_par = [mu, 10.0, 4.0, 6.0, 0.0, 0.0]
-        out = ms.full(calc, T, m_par)
-        results[mu] = out
-        print(f"    {mu!r}: {out!r},")
+        out = ms.thermodynamics(
+            calc, T, m_par,
+            coverage=True, susceptibility=True, entropy=True, heat_capacity=True,
+        )
+        tup = (
+            out["coverage"], out["entropy"], out["susceptibility"],
+            out["heat_capacity"], out["grand_potential"],
+        )
+        results[mu] = tup
+        print(f"    {mu!r}: {tup!r},")
     return results
 
 
