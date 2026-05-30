@@ -42,7 +42,7 @@ Two-component (A + B) lattice gas with chemical potentials *μ*_A, *μ*_B and pa
 m_par = [muA, muB, epsAA, epsBB, epsAB]
 ```
 
-The `full()` function returns coverage, entropy, susceptibility, heat capacity, and grand potential in one call.
+The `thermodynamics()` function can return coverage, entropy, susceptibility, heat capacity, and grand potential — caller chooses which.
 
 ## Supported lattice geometries
 
@@ -108,8 +108,8 @@ calc.constant = 1.0   # dimensionless units
 
 J, h = 1.0, 0.0
 for T in np.arange(1.8, 2.6, 0.05):
-    Cv = ms.heat_capacity(calc, T, m_par=[h, -J])
-    print(f"T = {T:.2f}   Cv = {Cv:.6f}")
+    result = ms.thermodynamics(calc, T, m_par=[h, -J], heat_capacity=True)
+    print(f"T = {T:.2f}   Cv = {result['heat_capacity']:.6f}")
 ```
 
 ### Binary lattice gas on FSHL — equation of state
@@ -127,8 +127,13 @@ T = 100.0
 print("mu   coverage   entropy   susceptibility   heat_capacity   grand_potential")
 for mu in np.arange(-10.0, 40.0, 2.0):
     m_par = [mu, 10.0, 4.0, 6.0, 0.0]
-    theta, S, chi, Cv, Omega = ms.full(calc, T, m_par)
-    print(f"{mu:6.1f}  {theta:.4f}  {S:.4f}  {chi:.4f}  {Cv:.4f}  {Omega:.4f}")
+    obs = ms.thermodynamics(
+        calc, T, m_par,
+        coverage=True, susceptibility=True, entropy=True, heat_capacity=True,
+    )
+    print(f"{mu:6.1f}  {obs['coverage']:.4f}  {obs['entropy']:.4f}  "
+          f"{obs['susceptibility']:.4f}  {obs['heat_capacity']:.4f}  "
+          f"{obs['grand_potential']:.4f}")
 ```
 
 Run the bundled example scripts directly from the repository root:
@@ -192,13 +197,29 @@ Central configuration object. Key attributes:
 
 Returns `ln Z / N` (grand potential per node in units of `constant * T`) at temperature *T* and model parameters `m_par`.
 
-### `full(calc, T, m_par)`
+### `thermodynamics(calc, T, m_par, *, coverage=False, susceptibility=False, entropy=False, heat_capacity=False, mu_index=0, dmu=1e-3, dT=1e-3)`
 
-Returns a tuple `(coverage, entropy, susceptibility, heat_capacity, grand_potential)` computed via finite differences of `simulate`.
+Compute the requested thermodynamic observables as finite-difference
+derivatives of the grand potential.  Each observable is selected by a
+keyword flag and only the minimal set of points is evaluated:
 
-### `heat_capacity(calc, T, m_par)`
+| Observable | Derivative | Sample points |
+|---|---|---|
+| `coverage` | 1st w.r.t. *μ* | *μ*−, *μ*+ |
+| `susceptibility` | 2nd w.r.t. *μ* | *μ*−, center, *μ*+ |
+| `entropy` | 1st w.r.t. *T* | *T*−, *T*+ |
+| `heat_capacity` | 2nd w.r.t. *T* | *T*−, center, *T*+ |
 
-Returns the heat capacity *C*_V at temperature *T* via a second numerical derivative of `simulate`.
+The center point is shared between the two second derivatives.  When
+any second derivative is requested the center is evaluated anyway, so
+the dict also contains `grand_potential` (= `simulate(calc, T, m_par)`).
+
+Returns a `dict` with only the requested keys.  Example:
+
+```python
+ms.thermodynamics(calc, T, m_par, heat_capacity=True)
+# {'grand_potential': ..., 'heat_capacity': ...}
+```
 
 ## Project structure
 
@@ -208,7 +229,7 @@ htn/
 │   ├── __init__.py          # package marker
 │   ├── BuildTensors.py      # transfer matrix construction for each model
 │   ├── TensorNetworks.py    # HTN contraction step (diamond and FSHL)
-│   └── MainScripts.py       # CalcConfig, simulate(), full(), heat_capacity()
+│   └── MainScripts.py       # CalcConfig, simulate(), thermodynamics()
 ├── tests/
 │   └── test_regression.py   # baseline values captured from the published code
 ├── tools/
