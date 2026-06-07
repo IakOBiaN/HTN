@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 import Scripts.TensorNetworks as tn
 import Scripts.BuildTensors as bt
@@ -95,7 +97,12 @@ def simulate(calc, T = 1.0, m_par = [0.0] * 10):
 			break
 
 	if i > 250:
-		print("Warning! More than 250 iterations")
+		warnings.warn(
+			f"HTN iteration is converging slowly: used {i + 1} of "
+			f"{calc.iterations} iterations (tolerance {calc.methodTolerance}).",
+			RuntimeWarning,
+			stacklevel=2,
+		)
 	nodes = calc.nodes
 	return (scale + np.log(norm)) / (nodes / (calc.constant * T))
 
