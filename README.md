@@ -246,4 +246,10 @@ htn/
 
 ## License
 
-This project is licensed under the terms of the [LICENSE](LICENSE) file included in the repository.
+Released under the **MIT License** — free for any use, including commercial and
+closed-source projects, provided the copyright notice is retained. See
+[LICENSE](LICENSE) for the full text.
+
+If you use HTN in academic work a citation is appreciated (see
+[CITATION.cff](CITATION.cff) or the [Related publication](#related-publication)
+section above), but this is a courtesy, not a license requirement.

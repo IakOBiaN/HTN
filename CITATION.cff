@@ -1,0 +1,46 @@
+cff-version: 1.2.0
+title: "HTN: Hierarchical Tensor Networks for Lattice Models"
+message: >-
+  If you use this software, please cite both the software itself
+  and the accompanying paper (see preferred-citation).
+type: software
+authors:
+  - family-names: Akimenko
+    given-names: "S. S."
+    email: iakobian@gmail.com
+    affiliation: "Omsk State Technical University, Omsk, Russian Federation"
+  - family-names: Myshlyavtsev
+    given-names: "A. V."
+    affiliation: "Omsk State Technical University, Omsk, Russian Federation"
+repository-code: "https://github.com/IakOBiaN/HTN"
+abstract: >-
+  Python implementation of the Hierarchical Tensor Network (HTN)
+  approach for computing thermodynamic properties of statistical-physics
+  models (Ising, binary lattice gas) on hierarchical lattices such as the
+  diamond-like hierarchical lattice (DHL) and the folded square
+  hierarchical lattice (FSHL).
+keywords:
+  - tensor networks
+  - hierarchical lattices
+  - statistical physics
+  - renormalization group
+  - Ising model
+  - lattice gas
+  - adsorption
+license: MIT
+preferred-citation:
+  type: article
+  title: "Tensor networks for hierarchical lattices"
+  authors:
+    - family-names: Akimenko
+      given-names: "S. S."
+    - family-names: Myshlyavtsev
+      given-names: "A. V."
+  journal: "EPL (Europhysics Letters)"
+  volume: 148
+  issue: 6
+  start: 61001
+  year: 2024
+  month: 12
+  doi: "10.1209/0295-5075/ad994b"
+  url: "https://doi.org/10.1209/0295-5075/ad994b"
