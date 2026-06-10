@@ -17,10 +17,37 @@ This repository provides a reusable library (`Scripts/`) and four ready-to-run e
 
 ## Related publication
 
-The tensor network construction approach used here is described and benchmarked in:
+This repository accompanies:
+
+> S. S. Akimenko and A. V. Myshlyavtsev, *"Tensor networks for hierarchical lattices"*, **EPL (Europhysics Letters)** 148, 61001 (2024).  
+> DOI: [10.1209/0295-5075/ad994b](https://doi.org/10.1209/0295-5075/ad994b)
+
+The underlying tensor-network construction is described and benchmarked in:
 
 > S. S. Akimenko, *"Tensor network construction for lattice gas models: Hard-core and triangular lattice models"*, **Physical Review E** 107, 054116 (2023).  
 > DOI: [10.1103/PhysRevE.107.054116](https://doi.org/10.1103/PhysRevE.107.054116)
+
+## Reproducing the paper
+
+Figure 3 of the paper can be regenerated from scratch. Install the optional
+plotting dependencies and run the reproduction script from the repository root:
+
+```bash
+pip install -r requirements-plot.txt
+python -m reproduce.figure3_ising
+```
+
+![Ising heat capacity on hierarchical lattices](figures/figure3_ising.png)
+
+**(a)** On the diamond hierarchical lattice the heat-capacity peak converges to the
+exact critical temperature `k_B T_c / J = 1.641` as the renormalization depth `k`
+grows. **(b)** Every member of the FSHL family peaks at the exact square-lattice
+value `k_B T_c / J = 2 / ln(1 + sqrt(2)) = 2.269`. **(c)** An antiferromagnet in a
+field (`beta h = 1`) on the FSHL family, whose critical point shifts with `p`.
+
+The same calculation is available as a narrated, ready-to-run notebook,
+[`notebooks/reproduce_paper.ipynb`](notebooks/reproduce_paper.ipynb). The raw
+curves are written as CSV to `data/`. See [`reproduce/`](reproduce/) for details.
 
 ## Supported models
 
@@ -230,6 +257,13 @@ htn/
 │   ├── BuildTensors.py      # transfer matrix construction for each model
 │   ├── TensorNetworks.py    # HTN contraction step (diamond and FSHL)
 │   └── MainScripts.py       # CalcConfig, simulate(), thermodynamics()
+├── reproduce/               # scripts that regenerate the paper figures
+│   ├── _common.py           # shared computation / plotting helpers
+│   └── figure3_ising.py     # Fig. 3: Ising on DHL and the FSHL family
+├── notebooks/
+│   └── reproduce_paper.ipynb # narrated walk-through of Fig. 3
+├── figures/                 # generated figures (PNG)
+├── data/                    # generated curves (CSV)
 ├── tests/
 │   └── test_regression.py   # baseline values captured from the published code
 ├── tools/
@@ -241,6 +275,8 @@ htn/
 ├── pyproject.toml           # pytest configuration
 ├── requirements.txt         # runtime dependencies
 ├── requirements-dev.txt     # adds pytest on top of requirements.txt
+├── requirements-plot.txt    # adds matplotlib for the reproduction scripts
+├── CITATION.cff             # how to cite the software and the paper
 └── LICENSE
 ```
 
