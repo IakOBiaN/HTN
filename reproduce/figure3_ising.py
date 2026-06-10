@@ -30,13 +30,13 @@ def main():
         cv = C.ising_cv_curve_fixed_k("diamond", Ta, k=k, h=0.0, J=1.0, coord=3)
         ax_a.plot(Ta, cv, label=f"k = {k}")
         cols_a.append(cv)
-    ax_a.axvline(C.TC_DHL, color="0.4", ls="--", lw=1.2)
-    ax_a.text(C.TC_DHL + 0.03, ax_a.get_ylim()[1] * 0.05,
-              r"$k_B T_c/J = 1.641$", color="0.4", fontsize=9)
+    ax_a.axvline(C.TC_DHL, color="0.4", ls="--", lw=1.2,
+                 label=r"exact $T_c = 1.641$")
     ax_a.set_title("(a) DHL, $h = 0$, increasing $k$")
     ax_a.set_xlabel(r"$k_B T / J$")
     ax_a.set_ylabel(r"Heat capacity  $C$")
-    ax_a.legend(ncol=2)
+    ax_a.set_ylim(top=ax_a.get_ylim()[1] * 1.28)
+    ax_a.legend(loc="upper center", ncol=3, fontsize=8.5, columnspacing=1.2)
 
     # --- Panel (b): FSHL family, h = 0 ------------------------------------
     Tb = np.arange(1.80, 2.80, 0.01)
@@ -45,13 +45,13 @@ def main():
         cv = C.ising_cv_curve("FSHL", Tb, h=0.0, J=1.0, metParam=p)
         ax_b.plot(Tb, cv, label=f"p = {p}")
         cols_b.append(cv)
-    ax_b.axvline(C.TC_SQUARE, color="0.4", ls="--", lw=1.2)
-    ax_b.text(C.TC_SQUARE + 0.02, ax_b.get_ylim()[1] * 0.05,
-              r"$k_B T_c/J = 2.269$", color="0.4", fontsize=9)
+    ax_b.axvline(C.TC_SQUARE, color="0.4", ls="--", lw=1.2,
+                 label=r"exact $T_c = 2.269$")
     ax_b.set_title("(b) FSHL family, $h = 0$")
     ax_b.set_xlabel(r"$k_B T / J$")
     ax_b.set_ylabel(r"Heat capacity  $C$")
-    ax_b.legend()
+    ax_b.set_ylim(top=ax_b.get_ylim()[1] * 1.25)
+    ax_b.legend(loc="upper center", ncol=3, fontsize=8.5, columnspacing=1.2)
 
     # --- Panel (c): FSHL family, antiferromagnet, beta h = 1 --------------
     Tc = np.arange(1.50, 3.00, 0.01)
@@ -63,7 +63,8 @@ def main():
     ax_c.set_title(r"(c) FSHL family, $\beta h = 1$, $J < 0$")
     ax_c.set_xlabel(r"$k_B T / |J|$")
     ax_c.set_ylabel(r"Heat capacity  $C$")
-    ax_c.legend()
+    ax_c.set_ylim(top=ax_c.get_ylim()[1] * 1.18)
+    ax_c.legend(loc="upper center", ncol=3, fontsize=9)
 
     fig.tight_layout()
     out = C.savefig(fig, "figure3_ising.png")
