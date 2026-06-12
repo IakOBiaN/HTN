@@ -54,9 +54,11 @@ def main():
     ax_b.legend(loc="upper center", ncol=3, fontsize=8.5, columnspacing=1.2)
 
     # --- Panel (c): FSHL family, antiferromagnet, beta h = 1 --------------
-    Tc = np.arange(1.50, 3.00, 0.01)
+    # The peaks sharpen with p (FWHM ~0.13 at p = 10), so this panel uses a
+    # narrow window around the critical region and a fine step.
+    Tc = np.arange(1.60, 2.30, 0.005)
     cols_c = [Tc]
-    for p in (1, 2, 5):
+    for p in (1, 2, 5, 10):
         cv = C.ising_cv_curve("FSHL", Tc, betah=1.0, J=-1.0, metParam=p)
         ax_c.plot(Tc, cv, label=f"p = {p}")
         cols_c.append(cv)
@@ -64,7 +66,7 @@ def main():
     ax_c.set_xlabel(r"$k_B T / |J|$")
     ax_c.set_ylabel(r"Heat capacity  $C$")
     ax_c.set_ylim(top=ax_c.get_ylim()[1] * 1.18)
-    ax_c.legend(loc="upper center", ncol=3, fontsize=9)
+    ax_c.legend(loc="upper center", ncol=4, fontsize=9)
 
     fig.tight_layout()
     out = C.savefig(fig, "figure3_ising.png")
@@ -76,7 +78,7 @@ def main():
     C.save_csv("figure3b_fshl_h0.csv",
                "T,p1,p2,p5,p10", cols_b)
     C.save_csv("figure3c_fshl_antiferro.csv",
-               "T,p1,p2,p5", cols_c)
+               "T,p1,p2,p5,p10", cols_c)
 
     # --- Report the recovered critical temperatures -----------------------
     print("\nRecovered heat-capacity peak positions:")

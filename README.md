@@ -22,11 +22,6 @@ This repository accompanies:
 > S. S. Akimenko and A. V. Myshlyavtsev, *"Tensor networks for hierarchical lattices"*, **EPL (Europhysics Letters)** 148, 61001 (2024).  
 > DOI: [10.1209/0295-5075/ad994b](https://doi.org/10.1209/0295-5075/ad994b)
 
-The underlying tensor-network construction is described and benchmarked in:
-
-> S. S. Akimenko, *"Tensor network construction for lattice gas models: Hard-core and triangular lattice models"*, **Physical Review E** 107, 054116 (2023).  
-> DOI: [10.1103/PhysRevE.107.054116](https://doi.org/10.1103/PhysRevE.107.054116)
-
 ## Reproducing the paper
 
 Figure 3 of the paper can be regenerated from scratch. Install the optional
