@@ -1,8 +1,8 @@
 import warnings
 
 import numpy as np
-import Scripts.TensorNetworks as tn
-import Scripts.BuildTensors as bt
+import htn.TensorNetworks as tn
+import htn.BuildTensors as bt
 
 
 class CalcConfig:
@@ -73,7 +73,7 @@ def simulate(calc, T = 1.0, m_par = [0.0] * 10):
 	T : float
 		Temperature (in units consistent with ``calc.constant``).
 	m_par : list of float
-		Model parameters; see :func:`Scripts.BuildTensors.build_matrix`
+		Model parameters; see :func:`htn.BuildTensors.build_matrix`
 		for the per-model layout.
 
 	Returns

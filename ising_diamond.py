@@ -1,17 +1,18 @@
-import Scripts.MainScripts as ms
+import numpy as np
 
-#ising model
-calc = ms.CalcConfig()
+import htn
+
+# Ising model on a diamond hierarchical lattice: heat capacity vs temperature.
+calc = htn.CalcConfig()
 calc.model = "ising"
 calc.lattice = "diamond"
 calc.coord = 3
-
-#model params
 calc.constant = 1
-T = 1.0
+
 J = 1.0
 h = 1.0
-for T in ms.np.arange(1.8, 2.6, 0.01):
-	m_par = [h, -J, 0, 0, 0, 0]
-	result = ms.thermodynamics(calc, T, m_par, heat_capacity=True)
-	print(T, result["heat_capacity"])
+print("Temperature, Heat_capacity")
+for T in np.arange(1.8, 2.6, 0.01):
+    m_par = [h, -J, 0, 0, 0, 0]
+    result = htn.thermodynamics(calc, T, m_par, heat_capacity=True)
+    print(T, result["heat_capacity"])

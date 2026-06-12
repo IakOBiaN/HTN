@@ -1,5 +1,58 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "htn"
+dynamic = ["version"]
+description = "Hierarchical Tensor Networks (HTN) for the thermodynamics of lattice models on hierarchical lattices"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "S. S. Akimenko", email = "iakobian@gmail.com" },
+    { name = "A. V. Myshlyavtsev" },
+]
+keywords = [
+    "tensor networks",
+    "hierarchical lattices",
+    "statistical physics",
+    "renormalization group",
+    "Ising model",
+    "lattice gas",
+    "adsorption",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "numpy>=1.21",
+]
+
+[project.optional-dependencies]
+plot = ["matplotlib>=3.5"]
+dev = ["pytest>=7", "ruff", "mypy", "pytest-cov"]
+
+[project.urls]
+Repository = "https://github.com/IakOBiaN/HTN"
+Publication = "https://doi.org/10.1209/0295-5075/ad994b"
+
+[tool.hatch.version]
+path = "htn/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["htn"]
+
 [tool.pytest.ini_options]
-# Make ``Scripts`` importable from tests when pytest is run from the
-# project root.
+# Allow ``import htn`` from the tests without installing the package, when
+# pytest is run from the project root.
 pythonpath = ["."]
 testpaths = ["tests"]

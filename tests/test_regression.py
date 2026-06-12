@@ -14,7 +14,7 @@ in this file deliberately.
 
 import pytest
 
-import Scripts.MainScripts as ms
+import htn as ms
 
 
 # ---------------------------------------------------------------------------

@@ -14,7 +14,7 @@ import sys
 # Make the project root importable when run as a script.
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import Scripts.MainScripts as ms
+import htn as ms
 
 
 def ising_baseline(lattice, **extra):

@@ -42,7 +42,7 @@ def htn_step(tensors, scale, norm, calc):
 	norm : float
 		Norm from the previous iteration (unused as input; preserved for
 		API stability).
-	calc : Scripts.MainScripts.CalcConfig
+	calc : htn.MainScripts.CalcConfig
 		Configuration; ``calc.lattice``, ``calc.metParam`` and
 		``calc.scale`` are read; ``calc.nodes`` is written.
 

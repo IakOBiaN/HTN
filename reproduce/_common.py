@@ -16,7 +16,7 @@ if _ROOT not in sys.path:
 
 import numpy as np
 
-import Scripts.MainScripts as ms
+import htn as ms
 
 # Output locations (created on demand).
 FIGURES_DIR = os.path.join(_ROOT, "figures")

@@ -6,7 +6,7 @@ Python implementation of the **Hierarchical Tensor Network (HTN)** approach for 
 
 The HTN method computes the partition function of a lattice model by iteratively contracting a tensor network built on a hierarchical lattice geometry. Unlike regular-lattice methods (e.g., TRG), hierarchical lattices admit an exact renormalization group scheme: each contraction step replaces a cluster of tensors with a single effective tensor, and convergence of the free energy signals that the thermodynamic limit has been reached.
 
-This repository provides a reusable library (`Scripts/`) and four ready-to-run examples covering two models on two lattice geometries:
+This repository provides an installable library (`htn/`) and four ready-to-run examples covering two models on two lattice geometries:
 
 | Example script | Model | Lattice | Observable |
 |---|---|---|---|
@@ -28,7 +28,7 @@ Figure 3 of the paper can be regenerated from scratch. Install the optional
 plotting dependencies and run the reproduction script from the repository root:
 
 ```bash
-pip install -r requirements-plot.txt
+pip install -e ".[plot]"
 python -m reproduce.figure3_ising
 ```
 
@@ -78,11 +78,11 @@ A family of hierarchical lattices parameterised by an integer *p* (`calc.metPara
 
 ## Installation
 
-**Requirements:** Python ≥ 3.8, NumPy.
+**Requirements:** Python ≥ 3.9, NumPy.
 
 ```bash
-git clone https://github.com/iakobian/htn.git
-cd htn
+git clone https://github.com/IakOBiaN/HTN.git
+cd HTN
 python -m venv .venv
 ```
 
@@ -94,10 +94,13 @@ Activate the virtual environment:
 | Windows `cmd.exe` | `.venv\Scripts\activate.bat` |
 | Windows PowerShell | `.venv\Scripts\Activate.ps1` |
 
-Then install dependencies:
+Then install the package (editable, so edits take effect without reinstalling).
+Optional extras pull in plotting and development tools:
 
 ```bash
-pip install -r requirements.txt
+pip install -e .              # core (NumPy only)
+pip install -e ".[plot]"      # + Matplotlib, for the reproduction scripts
+pip install -e ".[dev]"       # + pytest / ruff / mypy, for development
 ```
 
 > **PowerShell users:** if `Activate.ps1` fails with
@@ -110,7 +113,7 @@ pip install -r requirements.txt
 > Alternatively, skip activation entirely and call the venv's Python directly:
 >
 > ```powershell
-> .venv\Scripts\python.exe -m pip install -r requirements.txt
+> .venv\Scripts\python.exe -m pip install -e .
 > .venv\Scripts\python.exe ising_diamond.py
 > ```
 
@@ -119,10 +122,11 @@ pip install -r requirements.txt
 ### Ising model on a diamond lattice — heat capacity scan
 
 ```python
-import Scripts.MainScripts as ms
 import numpy as np
 
-calc = ms.CalcConfig()
+import htn
+
+calc = htn.CalcConfig()
 calc.model   = "ising"
 calc.lattice = "diamond"
 calc.coord   = 3
@@ -130,17 +134,18 @@ calc.constant = 1.0   # dimensionless units
 
 J, h = 1.0, 0.0
 for T in np.arange(1.8, 2.6, 0.05):
-    result = ms.thermodynamics(calc, T, m_par=[h, -J], heat_capacity=True)
+    result = htn.thermodynamics(calc, T, m_par=[h, -J], heat_capacity=True)
     print(f"T = {T:.2f}   Cv = {result['heat_capacity']:.6f}")
 ```
 
 ### Binary lattice gas on FSHL — equation of state
 
 ```python
-import Scripts.MainScripts as ms
 import numpy as np
 
-calc = ms.CalcConfig()
+import htn
+
+calc = htn.CalcConfig()
 calc.model    = "binary"
 calc.lattice  = "FSHL"
 calc.metParam = 1        # p parameter
@@ -149,7 +154,7 @@ T = 100.0
 print("mu   coverage   entropy   susceptibility   heat_capacity   grand_potential")
 for mu in np.arange(-10.0, 40.0, 2.0):
     m_par = [mu, 10.0, 4.0, 6.0, 0.0]
-    obs = ms.thermodynamics(
+    obs = htn.thermodynamics(
         calc, T, m_par,
         coverage=True, susceptibility=True, entropy=True, heat_capacity=True,
     )
@@ -177,7 +182,7 @@ With the virtual environment from the [Installation](#installation)
 section active, install the development dependencies and run pytest:
 
 ```bash
-pip install -r requirements-dev.txt
+pip install -e ".[dev]"
 pytest -v
 ```
 
@@ -186,7 +191,7 @@ The suite runs 32 parametrised cases in about 15 s on a modern laptop.
 Without activating the venv (handy on Windows PowerShell):
 
 ```powershell
-.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.venv\Scripts\python.exe -m pip install -e ".[dev]"
 .venv\Scripts\python.exe -m pytest -v
 ```
 
@@ -239,7 +244,7 @@ the dict also contains `grand_potential` (= `simulate(calc, T, m_par)`).
 Returns a `dict` with only the requested keys.  Example:
 
 ```python
-ms.thermodynamics(calc, T, m_par, heat_capacity=True)
+htn.thermodynamics(calc, T, m_par, heat_capacity=True)
 # {'grand_potential': ..., 'heat_capacity': ...}
 ```
 
@@ -247,8 +252,8 @@ ms.thermodynamics(calc, T, m_par, heat_capacity=True)
 
 ```
 htn/
-├── Scripts/
-│   ├── __init__.py          # package marker
+├── htn/                     # the installable package
+│   ├── __init__.py          # public API: CalcConfig, simulate, thermodynamics
 │   ├── BuildTensors.py      # transfer matrix construction for each model
 │   ├── TensorNetworks.py    # HTN contraction step (diamond and FSHL)
 │   └── MainScripts.py       # CalcConfig, simulate(), thermodynamics()
@@ -267,7 +272,7 @@ htn/
 ├── ising_FSHL.py            # example: Ising / FSHL
 ├── binary_diamond.py        # example: binary gas / diamond lattice
 ├── binary_FSHL.py           # example: binary gas / FSHL
-├── pyproject.toml           # pytest configuration
+├── pyproject.toml           # package metadata + pytest configuration
 ├── requirements.txt         # runtime dependencies
 ├── requirements-dev.txt     # adds pytest on top of requirements.txt
 ├── requirements-plot.txt    # adds matplotlib for the reproduction scripts

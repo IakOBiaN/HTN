@@ -10,7 +10,7 @@ def build_matrix(calc, temp, m_par):
 
 	Parameters
 	----------
-	calc : Scripts.MainScripts.CalcConfig
+	calc : htn.MainScripts.CalcConfig
 		Simulation configuration; ``calc.model``, ``calc.coord`` and
 		``calc.constant`` are read.
 	temp : float
