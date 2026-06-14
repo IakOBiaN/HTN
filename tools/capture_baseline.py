@@ -51,12 +51,20 @@ def binary_baseline(lattice, **extra):
     for mu in chemical_potentials:
         m_par = [mu, 10.0, 4.0, 6.0, 0.0, 0.0]
         out = ms.thermodynamics(
-            calc, T, m_par,
-            coverage=True, susceptibility=True, entropy=True, heat_capacity=True,
+            calc,
+            T,
+            m_par,
+            coverage=True,
+            susceptibility=True,
+            entropy=True,
+            heat_capacity=True,
         )
         tup = (
-            out["coverage"], out["entropy"], out["susceptibility"],
-            out["heat_capacity"], out["grand_potential"],
+            out["coverage"],
+            out["entropy"],
+            out["susceptibility"],
+            out["heat_capacity"],
+            out["grand_potential"],
         )
         results[mu] = tup
         print(f"    {mu!r}: {tup!r},")

@@ -24,7 +24,7 @@ DATA_DIR = os.path.join(_ROOT, "data")
 
 # Exact reference critical temperatures, in units of k_B T_c / J.
 TC_SQUARE = 2.0 / np.log(1.0 + np.sqrt(2.0))  # 2.2691...  (Onsager, square lattice)
-TC_DHL = 1.641                                # diamond hierarchical lattice (Ref. [29])
+TC_DHL = 1.641  # diamond hierarchical lattice (Ref. [29])
 
 
 # ---------------------------------------------------------------------------
@@ -46,9 +46,7 @@ def ising_cv(calc, T, h, J):
     ``J`` is the coupling entry of ``m_par``: ``J > 0`` is ferromagnetic,
     ``J < 0`` antiferromagnetic.  ``h`` is the (single-node) external field.
     """
-    return ms.thermodynamics(
-        calc, T, [h, J, 0, 0, 0, 0], heat_capacity=True
-    )["heat_capacity"]
+    return ms.thermodynamics(calc, T, [h, J, 0, 0, 0, 0], heat_capacity=True)["heat_capacity"]
 
 
 def ising_cv_curve(lattice, temperatures, h=0.0, J=1.0, betah=None, **overrides):
@@ -90,8 +88,7 @@ def save_csv(filename, header, columns):
     """Save column data to ``data/<filename>`` as CSV with a header line."""
     os.makedirs(DATA_DIR, exist_ok=True)
     path = os.path.join(DATA_DIR, filename)
-    np.savetxt(path, np.column_stack(columns), delimiter=",",
-               header=header, comments="")
+    np.savetxt(path, np.column_stack(columns), delimiter=",", header=header, comments="")
     return path
 
 
@@ -108,15 +105,17 @@ def setup_style():
     of the module stays usable without the optional plotting dependency."""
     import matplotlib.pyplot as plt
 
-    plt.rcParams.update({
-        "figure.dpi": 120,
-        "savefig.dpi": 150,
-        "font.size": 11,
-        "axes.grid": True,
-        "grid.alpha": 0.3,
-        "axes.spines.top": False,
-        "axes.spines.right": False,
-        "lines.linewidth": 2.0,
-        "legend.frameon": False,
-    })
+    plt.rcParams.update(
+        {
+            "figure.dpi": 120,
+            "savefig.dpi": 150,
+            "font.size": 11,
+            "axes.grid": True,
+            "grid.alpha": 0.3,
+            "axes.spines.top": False,
+            "axes.spines.right": False,
+            "lines.linewidth": 2.0,
+            "legend.frameon": False,
+        }
+    )
     return plt

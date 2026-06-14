@@ -30,8 +30,7 @@ def main():
         cv = C.ising_cv_curve_fixed_k("diamond", Ta, k=k, h=0.0, J=1.0, coord=3)
         ax_a.plot(Ta, cv, label=f"k = {k}")
         cols_a.append(cv)
-    ax_a.axvline(C.TC_DHL, color="0.4", ls="--", lw=1.2,
-                 label=r"exact $T_c = 1.641$")
+    ax_a.axvline(C.TC_DHL, color="0.4", ls="--", lw=1.2, label=r"exact $T_c = 1.641$")
     ax_a.set_title("(a) DHL, $h = 0$, increasing $k$")
     ax_a.set_xlabel(r"$k_B T / J$")
     ax_a.set_ylabel(r"Heat capacity  $C$")
@@ -45,8 +44,7 @@ def main():
         cv = C.ising_cv_curve("FSHL", Tb, h=0.0, J=1.0, metParam=p)
         ax_b.plot(Tb, cv, label=f"p = {p}")
         cols_b.append(cv)
-    ax_b.axvline(C.TC_SQUARE, color="0.4", ls="--", lw=1.2,
-                 label=r"exact $T_c = 2.269$")
+    ax_b.axvline(C.TC_SQUARE, color="0.4", ls="--", lw=1.2, label=r"exact $T_c = 2.269$")
     ax_b.set_title("(b) FSHL family, $h = 0$")
     ax_b.set_xlabel(r"$k_B T / J$")
     ax_b.set_ylabel(r"Heat capacity  $C$")
@@ -73,21 +71,16 @@ def main():
     print("wrote", out)
 
     # --- Save the underlying data -----------------------------------------
-    C.save_csv("figure3a_dhl_finite_k.csv",
-               "T,k1,k2,k4,k6,k12", cols_a)
-    C.save_csv("figure3b_fshl_h0.csv",
-               "T,p1,p2,p5,p10", cols_b)
-    C.save_csv("figure3c_fshl_antiferro.csv",
-               "T,p1,p2,p5,p10", cols_c)
+    C.save_csv("figure3a_dhl_finite_k.csv", "T,k1,k2,k4,k6,k12", cols_a)
+    C.save_csv("figure3b_fshl_h0.csv", "T,p1,p2,p5,p10", cols_b)
+    C.save_csv("figure3c_fshl_antiferro.csv", "T,p1,p2,p5,p10", cols_c)
 
     # --- Report the recovered critical temperatures -----------------------
     print("\nRecovered heat-capacity peak positions:")
     for k, col in zip((1, 2, 4, 6, 12), cols_a[1:]):
-        print(f"  DHL  k = {k:>2}:  T_peak = {C.peak(Ta, col)[0]:.3f}   "
-              f"(exact 1.641)")
+        print(f"  DHL  k = {k:>2}:  T_peak = {C.peak(Ta, col)[0]:.3f}   (exact 1.641)")
     for p, col in zip((1, 2, 5, 10), cols_b[1:]):
-        print(f"  FSHL p = {p:>2}:  T_peak = {C.peak(Tb, col)[0]:.3f}   "
-              f"(exact 2.269)")
+        print(f"  FSHL p = {p:>2}:  T_peak = {C.peak(Tb, col)[0]:.3f}   (exact 2.269)")
 
 
 if __name__ == "__main__":

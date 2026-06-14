@@ -13,8 +13,19 @@ print("Chemical_potential, Density, Entropy, Susceptibility, Heat_capacity, Gran
 for mu in np.arange(-10.00, 40.01, 1.0):
     m_par = [mu, 10.0, 4.0, 6.0, 0, 0]
     result = htn.thermodynamics(
-        calc, T, m_par,
-        coverage=True, susceptibility=True, entropy=True, heat_capacity=True,
+        calc,
+        T,
+        m_par,
+        coverage=True,
+        susceptibility=True,
+        entropy=True,
+        heat_capacity=True,
     )
-    print(mu, result["coverage"], result["entropy"], result["susceptibility"],
-          result["heat_capacity"], result["grand_potential"])
+    print(
+        mu,
+        result["coverage"],
+        result["entropy"],
+        result["susceptibility"],
+        result["heat_capacity"],
+        result["grand_potential"],
+    )

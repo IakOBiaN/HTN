@@ -51,6 +51,20 @@ path = "htn/__init__.py"
 [tool.hatch.build.targets.wheel]
 packages = ["htn"]
 
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+extend-exclude = ["*.ipynb"]  # leave notebook code cells untouched
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]  # long lines (mostly transfer-matrix literals)
+
+[tool.ruff.lint.per-file-ignores]
+# These scripts deliberately manipulate sys.path before importing.
+"reproduce/_common.py" = ["E402"]
+"tools/capture_baseline.py" = ["E402"]
+
 [tool.pytest.ini_options]
 # Allow ``import htn`` from the tests without installing the package, when
 # pytest is run from the project root.
