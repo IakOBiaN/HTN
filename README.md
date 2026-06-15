@@ -6,7 +6,7 @@
 
 Python implementation of the **Hierarchical Tensor Network (HTN)** approach for computing thermodynamic properties of statistical physics models on hierarchical lattices.
 
-## Overview
+## Overview 
 
 The HTN method computes the partition function of a lattice model by iteratively contracting a tensor network built on a hierarchical lattice geometry. Unlike regular-lattice methods (e.g., TRG), hierarchical lattices admit an exact renormalization group scheme: each contraction step replaces a cluster of tensors with a single effective tensor, and convergence of the free energy signals that the thermodynamic limit has been reached.
 
