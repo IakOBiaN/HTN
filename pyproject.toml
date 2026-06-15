@@ -39,7 +39,7 @@ dependencies = [
 
 [project.optional-dependencies]
 plot = ["matplotlib>=3.5"]
-dev = ["pytest>=7", "ruff", "mypy", "pytest-cov"]
+dev = ["pytest>=7", "ruff>=0.15,<0.16", "mypy", "pytest-cov"]
 
 [project.urls]
 Repository = "https://github.com/IakOBiaN/HTN"
@@ -68,6 +68,13 @@ ignore = ["E501"]  # long lines (mostly transfer-matrix literals)
 [tool.mypy]
 files = ["htn"]
 ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["htn"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
 
 [tool.pytest.ini_options]
 # Allow ``import htn`` from the tests without installing the package, when

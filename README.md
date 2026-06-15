@@ -208,6 +208,19 @@ python tools/capture_baseline.py
 
 Paste the printed dictionaries into `tests/test_regression.py`.
 
+## Code quality
+
+Continuous integration (GitHub Actions) runs the full test matrix
+(Ubuntu + Windows, Python 3.9–3.12) plus linting, type checking and a
+coverage report on every push. To run the same checks locally:
+
+```bash
+ruff check .            # lint
+ruff format --check .   # formatting
+mypy                    # static type checking
+pytest --cov=htn        # tests + coverage (currently ~92%, lines + branches)
+```
+
 ## API reference
 
 ### `CalcConfig`
