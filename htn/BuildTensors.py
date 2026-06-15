@@ -1,7 +1,14 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import numpy as np
 
+if TYPE_CHECKING:
+    from htn.MainScripts import CalcConfig
 
-def build_matrix(calc, temp, m_par):
+
+def build_matrix(calc: CalcConfig, temp: float, m_par: list[float]) -> list[np.ndarray]:
     """Build the per-edge transfer matrices for the chosen model.
 
     Returns a list of three Boltzmann-weight matrices (one per edge
@@ -41,7 +48,7 @@ def build_matrix(calc, temp, m_par):
     assert exist is not None, "Error! There is no such model in the database"
 
     # [right, bottom]
-    matrixes = []
+    matrixes: list[np.ndarray] = []
     if model == "mono":
         matrixes = [
             np.array(

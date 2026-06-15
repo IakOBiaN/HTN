@@ -65,6 +65,10 @@ ignore = ["E501"]  # long lines (mostly transfer-matrix literals)
 "reproduce/_common.py" = ["E402"]
 "tools/capture_baseline.py" = ["E402"]
 
+[tool.mypy]
+files = ["htn"]
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 # Allow ``import htn`` from the tests without installing the package, when
 # pytest is run from the project root.

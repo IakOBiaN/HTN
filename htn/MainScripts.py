@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import warnings
 
 import numpy as np
@@ -35,20 +37,20 @@ class CalcConfig:
 
     def __init__(
         self,
-        methodTolerance=1e-8,
-        constant=0.008314,
-        method="trg",
-        metModification="default",
-        scale=4,
-        iterations=300,
-        model="ising",
-        lattice="square",
-        gen_tensor="default",
-        nodes=1,
-        coord=4,
-        metParam=10,
-        join_tensors=[1, 1],
-    ):
+        methodTolerance: float = 1e-8,
+        constant: float = 0.008314,
+        method: str = "trg",
+        metModification: str = "default",
+        scale: int = 4,
+        iterations: int = 300,
+        model: str = "ising",
+        lattice: str = "square",
+        gen_tensor: str = "default",
+        nodes: int = 1,
+        coord: int = 4,
+        metParam: int = 10,
+        join_tensors: list[int] = [1, 1],
+    ) -> None:
         # tolerance of method
         self.methodTolerance = methodTolerance
         # constant. Default is R = 0.008314
@@ -76,11 +78,11 @@ class CalcConfig:
         # joining nodes
         self.join_tensors = join_tensors
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.method + "_p_" + str(self.metParam) + "_" + self.model + "_" + self.lattice
 
 
-def simulate(calc, T=1.0, m_par=[0.0] * 10):
+def simulate(calc: CalcConfig, T: float = 1.0, m_par: list[float] = [0.0] * 10) -> float:
     """Compute the grand potential per node via HTN iteration.
 
     Parameters
@@ -126,18 +128,18 @@ def simulate(calc, T=1.0, m_par=[0.0] * 10):
 
 
 def thermodynamics(
-    calc,
-    T=1.0,
-    m_par=None,
+    calc: CalcConfig,
+    T: float = 1.0,
+    m_par: list[float] | None = None,
     *,
-    coverage=False,
-    susceptibility=False,
-    entropy=False,
-    heat_capacity=False,
-    mu_index=0,
-    dmu=1e-3,
-    dT=1e-3,
-):
+    coverage: bool = False,
+    susceptibility: bool = False,
+    entropy: bool = False,
+    heat_capacity: bool = False,
+    mu_index: int = 0,
+    dmu: float = 1e-3,
+    dT: float = 1e-3,
+) -> dict[str, float]:
     """Compute the requested thermodynamic observables.
 
     Each observable is a finite-difference derivative of the grand
@@ -186,9 +188,9 @@ def thermodynamics(
     need_T = entropy or heat_capacity
     need_center = susceptibility or heat_capacity
 
-    result = {}
+    result: dict[str, float] = {}
 
-    center = None
+    center: float | None = None
     if need_center:
         center = simulate(calc, T, m_par)
         result["grand_potential"] = center
@@ -203,6 +205,7 @@ def thermodynamics(
         if coverage:
             result["coverage"] = -(omega_mu_minus - omega_mu_plus) / (2.0 * dmu)
         if susceptibility:
+            assert center is not None
             result["susceptibility"] = (
                 calc.constant * T * (omega_mu_minus - 2.0 * center + omega_mu_plus) / (dmu**2)
             )
@@ -213,6 +216,7 @@ def thermodynamics(
         if entropy:
             result["entropy"] = -(omega_T_minus - omega_T_plus) / (2.0 * dT)
         if heat_capacity:
+            assert center is not None
             result["heat_capacity"] = T * (omega_T_minus - 2.0 * center + omega_T_plus) / (dT**2)
 
     return result

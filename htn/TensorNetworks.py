@@ -3,7 +3,7 @@ import gc
 import numpy as np
 
 
-def identity(dimensions, elements):
+def identity(dimensions: int, elements: int) -> np.ndarray:
     """Return a generalised Kronecker delta ("copy") tensor.
 
     The tensor has shape ``(elements,) * dimensions`` and contains 1 at
